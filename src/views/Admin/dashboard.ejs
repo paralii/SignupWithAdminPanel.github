@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="navbar">
+        <h1>Welcome, <%= admin.adminname %></h1>
+        <a href="/admin/logout">Logout</a>
+    </div>
+    <div class="container">
+        <h2>Manage Users</h2>
+        <% if (message) { %>
+            <p style="color: green;"><%= message %></p>
+        <% } %>
+        <!-- Buttons to Trigger Modals -->
+        <button onclick="openModal('addModal')">Add User</button>
+        <button onclick="openModal('searchModal')">Search User</button>
+
+        <!-- User List -->
+        <div class="user-list">
+            <h3>All Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.name %></td>
+                            <td><%= user.email %></td>
+                            <td>
+                                <!-- Delete User Form -->
+                                <form action="/admin/delete-user/<%= user._id %>" method="POST" style="display:inline;">
+                                    <button type="submit" style="background: red; color: white;">Delete</button>
+                                </form>
+
+                                <!-- Update User Button -->
+                                <button onclick="populateUpdateModal('<%= user._id %>', '<%= user.name %>', '<%= user.email %>')">Update User</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="3">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addModal')">&times;</span>
+            <h3>Add User</h3>
+            <form action="/admin/add-user" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update User Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('updateModal')">&times;</span>
+            <h3>Update User</h3>
+            <form id="updateUserForm" method="POST">
+                <input type="text" name="username" placeholder="New Username" required>
+                <input type="email" name="email" placeholder="New Email" required>
+                <button type="submit">Update User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search User Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('searchModal')">&times;</span>
+            <h3>Search User</h3>
+            <form action="/admin/search-user" method="GET">
+                <input type="search" name="query" placeholder="Search by username or email">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to open modals
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        // Function to close modals
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Function to populate the update modal
+        function populateUpdateModal(userId, username, email) {
+            // Set the form's action dynamically
+            const form = document.getElementById('updateUserForm');
+            form.action = `/admin/update-user/${userId}`;
+
+            // Set the values of the inputs
+            form.querySelector('input[name="username"]').value = username;
+            form.querySelector('input[name="email"]').value = email;
+
+            // Open the modal
+            openModal('updateModal');
+        }
+        if (window.location.search.indexOf('message=') > -1) {
+            const url = new URL(window.location);
+            url.searchParams.delete('message');
+            window.history.replaceState({}, document.title, url.href);
+        }
+        window.history.replaceState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.go(1);
+        };
+    </script>
+</body>
+</html>

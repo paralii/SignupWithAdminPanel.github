@@ -1,0 +1,18 @@
+body {
+    background: url('/assets/background-image-error.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #495156;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #303335;
+}

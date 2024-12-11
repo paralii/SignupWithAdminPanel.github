@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Create Admin</h1>
+    <form action="/admin/createAdmin" method="POST">
+        <div>
+            <label for="adminUsername">Username:</label>
+            <input type="text" id="adminUsername" name="adminUsername" required />
+        </div>
+        <div>
+            <label for="adminPassword">Password:</label>
+            <input type="password" id="adminPassword" name="adminPassword" required />
+        </div>
+        <button type="submit">Create Admin</button>
+    </form>
+</body>
+</html>
